@@ -1,0 +1,24 @@
+.App {
+  text-align: center;
+}
+.table-bordered{
+	border: 1px solid black;
+}
+.table-bordered th{
+	border: 1px solid black;
+	padding: 10px;
+	color:white;
+	background: #000;
+	font-weight: 100;
+}
+th .fa{
+	cursor: pointer;
+	font-size: 12px;
+	float: right;
+}
+.fa{
+	padding: 2px;
+}
+.fa:hover{
+	opacity: 0.6;
+}
