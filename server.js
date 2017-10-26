@@ -9,6 +9,20 @@ app.listen(port, (err) => {
   console.log(`server is listening on ${port}`)
 });
 
+// Add headers
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    // Pass to next layer of middleware
+    next();
+});
+
 var data = [
   ['Amelia','Dexter.Trantow57@hotmail.com','LN','12:00'],
   ['Estevan','Aimee7@hotmail.com','LosAngels','01:00'],
@@ -16,6 +30,7 @@ var data = [
   ['Rylan','Angelita_Weimann42@gmail.com','PA','06:00'],
   ['Tressa','Yadira1@hotmail.com','NY','14:00']
 ];
+
 
 function sort(key, order){
   data.sort(function (a, b) {
