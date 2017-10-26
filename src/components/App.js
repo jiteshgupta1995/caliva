@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import TableComponent from "./TableComponent";
 import {records} from '../helper/helper';
+
 let self;
 class App extends Component {
   constructor(){
@@ -12,20 +13,27 @@ class App extends Component {
         "Name",
         "Email",
         "Address",
+        "Time",
         "Status",
         "Edit"
       ],
       body:[],
-      sort:["Name","Address"]
+      sort:["Name","Address","Time"],
+      option: "Edit",
+      showStatus: "Status",
+      order: "asc",
+      sortKey: "Name"
     }
   }
   componentDidMount(){
    records().then(function(d){
       self.setState({body: d});
-    }); 
+    });
   }
   render() {
-    return (<TableComponent value={this.state} />);
+    return ( this.state.body.length ) ? (
+      <TableComponent value={this.state} />
+      ) : (<div>Loading</div>);
   }
 }
 

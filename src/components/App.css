@@ -22,3 +22,16 @@ th .fa{
 .fa:hover{
 	opacity: 0.6;
 }
+.fa-chevron-down{
+	position: absolute;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+.fa-chevron-up{
+	position: absolute;
+    margin-top: -5px;
+    margin-left: 10px;
+}
+span{
+	position: relative;
+}
