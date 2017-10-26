@@ -57,11 +57,11 @@ class TableComponent extends Component {
       <td></td>
     );
   }
-  showIcon(){
+  showIcon(val){
     return( this.props.value.header.indexOf(this.props.value.option) > -1) ? (
       <td>
-        <i className="fa fa-pencil" onClick={()=> showAlert("Edit")}></i>
-        <i className="fa fa-ban" onClick={()=> showAlert("Blocked")}></i>
+        <i className="fa fa-pencil" onClick={()=> showAlert("Edit of "+val[0])}></i>
+        <i className="fa fa-ban" onClick={()=> showAlert("Blocked of "+val[0])}></i>
       </td>
     ): (
       <td></td>
@@ -94,7 +94,7 @@ class TableComponent extends Component {
                 <tr key={index}>
                   {this.displayData(val)}
                   {this.showStatus()}
-                  {this.showIcon()}
+                  {this.showIcon(val)}
                 </tr>
                )
               })
