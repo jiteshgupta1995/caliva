@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import './App.css';
 import TableComponent from "./TableComponent";
-import {records} from '../helper/helper';
+import {records} from '../helper/NetworkRequest';
 
 let self;
 class App extends Component {

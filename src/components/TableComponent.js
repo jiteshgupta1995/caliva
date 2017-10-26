@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {records, showAlert} from '../helper/helper';
+import {records, showAlert} from '../helper/NetworkRequest';
 
 let self;
 class TableComponent extends Component {

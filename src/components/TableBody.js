@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import  {showAlert} from '../helper/helper';
+import  {showAlert} from '../helper/NetworkRequest';
 
 class TableBody extends Component {
 	render() {
