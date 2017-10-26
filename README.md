@@ -11,13 +11,13 @@ Before you start application you need to Install
 
 In the project folder open the terminal and type 
 
-##### `npm install`
+#### `npm install`
 
 ## Running application
 
 In the project directory, you can run:
 
-### `npm start`
+#### `npm start`
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
