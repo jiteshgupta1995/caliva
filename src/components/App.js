@@ -10,7 +10,6 @@ class App extends Component {
     this.state = {
       header: [
         "Name",
-        "Email",
         "Address",
         "Time",
         "Status",
@@ -23,7 +22,9 @@ class App extends Component {
       showThumbDown: [true, "Status"],
       showThumbUp: [true, "Status"],
       order: "asc",
-      sortKey: "Name"
+      sortKey: "Name",
+      colSpan: ["Name","Email"],
+      rowSpan: ["Address",2]
     }
   }
   componentDidMount(){

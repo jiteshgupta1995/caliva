@@ -25,7 +25,7 @@ app.use(function (req, res, next) {
 
 var data = [
   {Name: 'Amelia', Email: 'Dexter.Trantow57@hotmail.com', Address: 'LN', Time: '12:00'},
-  {Name: 'Estevan', Email: 'Aimee7@hotmail.com', Address:'LosAngels', Time: '01:00'},
+  {Name: 'Estevan', Email: 'Aimee7@hotmail.com', Address:'LosAngeles', Time: '01:00'},
   {Name: 'Florence', Email: 'Jarrod.Bernier13@yahoo.com', Address: 'LasVegas', Time: '11:00'},
   {Name: 'Rylan', Email: 'Angelita_Weimann42@gmail.com', Address: 'PA', Time: '06:00'},
   {Name: 'Tressa', Email: 'Yadira1@hotmail.com', Address: 'NY', Time: '14:00'}
