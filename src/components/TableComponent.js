@@ -18,8 +18,6 @@ class TableComponent extends Component {
           order = "desc";
         }else if(self.state.order === "desc"){
           order = "asc";
-        }else{
-          return;
         }
       }
       this.props.method(key, order);
@@ -39,9 +37,9 @@ class TableComponent extends Component {
       if (head === this.state.sortKey && this.state.order === "asc") {
           button = <span><i className="fa fa-chevron-down" onClick={()=> this.clickHandler(head,"desc")}></i></span>
       } else if (head === this.state.sortKey && this.state.order === "desc") {
-          button = <span><i className="fa fa-chevron-up" onClick={()=> this.clickHandler(head,"asc")}></i></span>
+          button = <span><i className="fa fa-chevron-up header-sort" onClick={()=> this.clickHandler(head,"asc")}></i></span>
       } else {
-          button = <span><i className="fa fa-chevron-up" onClick={()=> this.clickHandler(head,"asc")}></i><i className="fa fa-chevron-down" onClick={()=> this.clickHandler(head,"desc")}></i></span>
+          button = <span><i className="fa fa-chevron-up header-sort" onClick={()=> this.clickHandler(head,"asc")}></i><i className="fa fa-chevron-down" onClick={()=> this.clickHandler(head,"desc")}></i></span>
       }
       return (button);
     }
@@ -55,11 +53,13 @@ class TableComponent extends Component {
                 this.props.value.header.map(head => {
                 return( this.props.value.sort.indexOf(head) > -1 ) ? (
                   <th key={head}>
-                    <div className="col-xs-8" onClick={()=> this.clickHandler(head)}>{head}</div>
-                    <div className="col-xs-3">{this.sortArrow(head)}</div>
+                    <div className="col-xs-9 header-div" onClick={()=> this.clickHandler(head)}>{head}</div>
+                    <div className="col-xs-3 header-div">{this.sortArrow(head)}</div>
                   </th>
                 ): (
-                  <th key={head}>{head}</th>
+                  <th key={head}>
+                    <div className="col-xs-12 header-div">{head}</div>
+                  </th>
                 );
               })
             }

@@ -18,7 +18,6 @@ class App extends Component {
       ],
       body:[],
       sort:["Name","Address","Time"],
-      option: "Edit",
       showEdit: [true, "Edit"],
       showBlock: [true, "Edit"],
       showThumbDown: [true, "Status"],
