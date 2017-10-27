@@ -14,12 +14,11 @@ body {
 	padding: 10px;
 	color:white;
 	background: #000;
-	font-weight: 100;
+	font-weight: 500;
 }
 th .fa{
 	cursor: pointer;
-	font-size: 12px;
-	float: right;
+	font-size: 10px;
 }
 .fa{
 	padding: 2px;
@@ -30,13 +29,18 @@ th .fa{
 .fa-chevron-down{
 	position: absolute;
     margin-top: 5px;
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 }
 .fa-chevron-up{
 	position: absolute;
     margin-top: -5px;
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 }
 span{
-	position: relative;
+	position: absolute;
+    width: 30px;
+    height: 20px;
+}
+.col-xs-8,.col-xs-3{
+	padding:5px !important;
 }

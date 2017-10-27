@@ -19,7 +19,10 @@ class App extends Component {
       body:[],
       sort:["Name","Address","Time"],
       option: "Edit",
-      showStatus: "Status",
+      showEdit: [true, "Edit"],
+      showBlock: [true, "Edit"],
+      showThumbDown: [true, "Status"],
+      showThumbUp: [true, "Status"],
       order: "asc",
       sortKey: "Name"
     }
@@ -29,9 +32,14 @@ class App extends Component {
       self.setState({body: d});
     });
   }
+  fetchRecord(key,order){
+    records(key,order).then(function(d){
+      self.setState({body: d});
+    });
+  }
   render() {
     return ( this.state.body.length ) ? (
-      <TableComponent value={this.state} />
+      <TableComponent value={this.state} method={this.fetchRecord} />
       ) : (<div>Loading</div>);
   }
 }

@@ -24,36 +24,36 @@ app.use(function (req, res, next) {
 });
 
 var data = [
-  ['Amelia','Dexter.Trantow57@hotmail.com','LN','12:00'],
-  ['Estevan','Aimee7@hotmail.com','LosAngels','01:00'],
-  ['Florence','Jarrod.Bernier13@yahoo.com','LasVegas','11:00'],
-  ['Rylan','Angelita_Weimann42@gmail.com','PA','06:00'],
-  ['Tressa','Yadira1@hotmail.com','NY','14:00']
+  {Name: 'Amelia', Email: 'Dexter.Trantow57@hotmail.com', Address: 'LN', Time: '12:00'},
+  {Name: 'Estevan', Email: 'Aimee7@hotmail.com', Address:'LosAngels', Time: '01:00'},
+  {Name: 'Florence', Email: 'Jarrod.Bernier13@yahoo.com', Address: 'LasVegas', Time: '11:00'},
+  {Name: 'Rylan', Email: 'Angelita_Weimann42@gmail.com', Address: 'PA', Time: '06:00'},
+  {Name: 'Tressa', Email: 'Yadira1@hotmail.com', Address: 'NY', Time: '14:00'}
 ];
 
 
-function sort(key, order){
-  data.sort(function (a, b) {
-    if(order == "asc" && key == "Name"){
-      return a[0].localeCompare(b[0]);
-    }else if(order == "desc" && key == "Name"){
-      return b[0].localeCompare(a[0]);
-    }else if(order == "asc" && key == "Address"){
-      return a[2].localeCompare(b[2]);
-    }else if(order == "desc" && key == "Address"){
-      return b[2].localeCompare(a[2]);
-    }else if(order == "asc" && key == "Time"){
-      return a[3].localeCompare(b[3]);
-    }else if(order == "desc" && key == "Time"){
-      return b[3].localeCompare(a[3]);
+function sort(property){
+  var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
     }
-  });
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
 }
 
 app.get('/fetchrecord', (req, res) => {
   var key = req.query.sortKey;
   var order = req.query.order;
   res.setHeader('Content-Type', 'application/json');
-  sort(key,order);
+  if(order == "asc"){
+    data.sort(sort(key));
+  }else{
+    data.sort(sort("-"+key));
+  }
   res.send(data).status(200);
 });
+
+
