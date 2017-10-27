@@ -28,17 +28,12 @@ th .fa{
 }
 .fa-chevron-down.header-sort{
 	position: absolute;
-    margin-top: 5px;
+    margin-top: 7px;
 }
 .fa-chevron-up.header-sort{
 	position: absolute;
-    margin-top: -5px;
+    margin-top: -3px;
 }
 th div span{
 	position: absolute;
-}
-@media(max-width: 800px){
-	.col-xs-6, .col-xs-3{
-		width: 100% !important;
-	}
 }
