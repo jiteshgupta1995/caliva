@@ -62,14 +62,14 @@ class TableComponent extends Component {
         {
             this.props.value.showThumbUp === title // checking whether to show Thumbs up icon
               ? (
-                <i className="fa fa-thumbs-up" onClick={()=> showAlert("ThumbDown")} key={"down"+index}></i>
+                <i className="fa fa-thumbs-up" onClick={()=> showAlert("ThumbUp")} key={"down"+index}></i>
             ) : null
             
         }
         {
             this.props.value.showThumbDown === title // checking whether to show Thumbs down icon
               ? (
-                <i className="fa fa-thumbs-down" onClick={()=> showAlert("ThumbUp")} key={"up"+index}></i>
+                <i className="fa fa-thumbs-down" onClick={()=> showAlert("ThumbDown")} key={"up"+index}></i>
             ) : null
         }
         </span>
