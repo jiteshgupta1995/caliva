@@ -48,7 +48,7 @@ app.get('/fetchrecord', (req, res) => {
   var key = req.query.sortKey;
   var order = req.query.order;
   res.setHeader('Content-Type', 'application/json');
-  if(order == "asc"){ // checks whether is sortorder is ascending or descending
+  if(order == "asc"){ // checks whether sortorder is ascending or descending
     data.sort(sort(key));
   }else{
     data.sort(sort("-"+key));

@@ -43,17 +43,21 @@ class App extends Component {
       self.setState({body: d});
     });
   }
-  fetchRecord(key,order){
-    // fetch records by api on every time sort action is performed
+  fetchRecord(key, order){
+    // fetch records by api on every time sort action is performed and updating state
     records(key,order).then(function(d){
-      self.setState({body: d});
+      self.setState({
+        body: d,
+        order: order,
+        sortKey: key
+      });
     });
   }
   render() {
     return ( 
       this.state.body.length // load component when data is fetched through api otherwise show 'Loading...'
     ) ? (
-      <TableComponent value={this.state} method={this.fetchRecord} />
+      <TableComponent value={this.state} fetchUpdate={this.fetchRecord} />
     ) : (
       <div>Loading...</div>
     );

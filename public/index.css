@@ -35,4 +35,5 @@ th .fa{
 }
 th div span{
 	position: absolute;
+	margin-left:-5px;
 }

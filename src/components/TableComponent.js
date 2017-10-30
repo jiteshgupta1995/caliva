@@ -1,49 +1,29 @@
 import React, { Component } from 'react';
-// helper component for showing alert which some action happens
+// helper function for showing alert when some action happens
 import { showAlert } from '../helper/NetworkRequest';
 
 class TableComponent extends Component {
-    constructor() {
-        super()
-        // maintaining current state of sortkey and sortorder
-        this.state = {
-            order: "",
-            sortKey: ""
-        }
-    }
     clickHandler(key, order = "asc") {
       // function called upon sort button clicked to change the order
-        if (this.state.sortKey === key) {
-            if (this.state.order === "asc") {
+        if (this.props.value.sortKey === key) {
+            if (this.props.value.order === "asc") {
                 order = "desc";
-            } else if (this.state.order === "desc") {
+            } else if (this.props.value.order === "desc") {
                 order = "asc";
             }
         }
-      // fetching new data by api from parent function
-        this.props.method(key, order);
-      // maintaining state change after click
-        this.setState({
-            order: order,
-            sortKey: key
-        });
-    }
-    componentDidMount() {
-      // setting state of sortkey and sortorder on component load
-        this.setState({
-            order: this.props.value.order,
-            sortKey: this.props.value.sortKey
-        });
+      // fetching new data by api from parent method
+        this.props.fetchUpdate(key, order);
     }
     sortArrow(head) {
       // function to check column clicked and current order
       // so that it can show which arrow to show in header of the table
         var button;
-        if (head === this.state.sortKey && this.state.order === "asc") { // checking if already selected sort sequence in ascending order
+        if (head === this.props.value.sortKey && this.props.value.order === "asc") { // checking if already selected sort sequence in ascending order
             
             button = <span><i className="fa fa-chevron-down header-sort" onClick={()=> this.clickHandler(head,"desc")}></i></span>
         
-        } else if (head === this.state.sortKey && this.state.order === "desc") { // checking if already selected sort sequence in descending order
+        } else if (head === this.props.value.sortKey && this.props.value.order === "desc") { // checking if already selected sort sequence in descending order
 
             button = <span><i className="fa fa-chevron-up header-sort" onClick={()=> this.clickHandler(head,"asc")}></i></span>
        
@@ -66,7 +46,7 @@ class TableComponent extends Component {
               {
                 val[title] // shows the data from object
               }
-              </div> : null // otherwise null
+            </div> : null // otherwise null
         }
         { this.props.value.showEdit === title // checking whether to show Edit icon
               ? (
@@ -80,17 +60,17 @@ class TableComponent extends Component {
             ) : null
         }
         {
-            this.props.value.showThumbDown === title // checking whether to show Thumbs down icon
-              ? (
-                <i className="fa fa-thumbs-up" onClick={()=> showAlert("ThumbUp")} key={"up"+index}></i>
-            ) : null
-        }
-        {
             this.props.value.showThumbUp === title // checking whether to show Thumbs up icon
               ? (
-                <i className="fa fa-thumbs-down" onClick={()=> showAlert("ThumbDown")} key={"down"+index}></i>
+                <i className="fa fa-thumbs-up" onClick={()=> showAlert("ThumbDown")} key={"down"+index}></i>
             ) : null
             
+        }
+        {
+            this.props.value.showThumbDown === title // checking whether to show Thumbs down icon
+              ? (
+                <i className="fa fa-thumbs-down" onClick={()=> showAlert("ThumbUp")} key={"up"+index}></i>
+            ) : null
         }
         </span>
       );
@@ -106,7 +86,7 @@ class TableComponent extends Component {
                   this.props.value.header.map(head => { // rendering header to show on table
                     return( 
                         this.props.value.colSpan.length && this.props.value.colSpan[0] === head // checking whether colspan is required or not
-                        ? colSpanVal = 2 : colSpanVal = 1 // sets 2 if required or else 1
+                        ? colSpanVal = 2 : colSpanVal = 1 // sets 2 if required else 1
                         ,
 
                       <th key={head} colSpan={colSpanVal}>
