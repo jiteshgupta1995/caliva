@@ -1,166 +1,250 @@
-import React, { Component } from 'react';
-// helper function for showing alert when some action happens
-import { showAlert } from '../helper/NetworkRequest';
+import React from "react";
+import PropTypes from "prop-types";
 
-class TableComponent extends Component {
-    clickHandler(key, order = "asc") {
-      // function called upon sort button clicked to change the order
-        if (this.props.value.sortKey === key) {
-            if (this.props.value.order === "asc") {
-                order = "desc";
-            } else if (this.props.value.order === "desc") {
-                order = "asc";
-            }
-        }
-      // fetching new data by api from parent method
-        this.props.fetchUpdate(key, order);
-    }
-    sortArrow(head) {
-      // function to check column clicked and current order
-      // so that it can show which arrow to show in header of the table
-        var button;
-        if (head === this.props.value.sortKey && this.props.value.order === "asc") { // checking if already selected sort sequence in ascending order
-            
-            button = <span><i className="fa fa-chevron-down header-sort" onClick={()=> this.clickHandler(head,"desc")}></i></span>
-        
-        } else if (head === this.props.value.sortKey && this.props.value.order === "desc") { // checking if already selected sort sequence in descending order
+const TableComponent = (props) => {
+	// called upon sort button clicked to change the order
+	const clickHandler = (key, order = "asc") => {
+		if (props.value.sortKey === key) {
+			if (props.value.order === "asc") {
+				order = "desc";
+			} else if (props.value.order === "desc") {
+				order = "asc";
+			}
+		}
+		// fetching new data by api from parent method
+		props.fetchUpdate(key, order);
+	};
+	// checks column clicked and current order
+	// so that it can show which arrow to show in header of the table
+	const sortArrow = (head) => {
+		var button;
+		// checking if already selected sort sequence in ascending order
+		if (head === props.value.sortKey &&
+			props.value.order === "asc") {
+			button = <span>
+				<i 
+					className="fa fa-chevron-down header-sort" 
+					onClick={()=> clickHandler( head, "desc" )}
+				>
+				</i>
+			</span>;
 
-            button = <span><i className="fa fa-chevron-up header-sort" onClick={()=> this.clickHandler(head,"asc")}></i></span>
-       
-        } else { // otherwise showing both icon
+		}
+		// checking if already selected sort sequence in descending order
+		else if (head === props.value.sortKey &&
+			props.value.order === "desc") {
+			button = <span>
+				<i 
+					className="fa fa-chevron-up header-sort" 
+					onClick={()=> clickHandler( head, "asc" )}
+				>
+				</i>
+			</span>;
+		}
+		// otherwise showing both icon
+		else {
+			button = <span>
+				<i 
+					className="fa fa-chevron-up header-sort" 
+					onClick={()=> clickHandler( head, "asc" )}
+				>
+				</i>
+				<i 
+					className="fa fa-chevron-down header-sort" 
+					onClick={()=> clickHandler( head, "desc" )}
+				>
+				</i>
+			</span>;
+		}
+		return (button);
+	};
+	// renders data for table body
+	// decides whether data is shown from api or is it custom icons
+	const showData = (val, title, index) => {
+		var data, edit, block, thumbup, thumbdown;
+		if ( val[title] !== undefined ) {
+			data = <span>{ val[title] }</span>;
+		} else {
+			data = null;
+		}
+		// checking whether to show Edit icon
+		if ( props.value.showEdit === title ) {
+			edit = <i 
+				className="fa fa-pencil" 
+				onClick={()=> alert("Edit")} 
+				key={"edit" + index}
+			>
+			</i>;
+		} else {
+			edit = null;
+		}
+		// checking whether to show Block icon
+		if ( props.value.showBlock === title ) {
+			block = <i 
+				className="fa fa-ban" 
+				onClick={()=> alert("Blocked")} 
+				key={"block" + index}
+			>
+			</i>;
+		} else {
+			block = null;
+		}
+		// checking whether to show Thumbs up icon
+		if ( props.value.showThumbUp === title ) {
+			thumbup = <i 
+				className="fa fa-thumbs-up" 
+				onClick={()=> alert("ThumbUp")} 
+				key={"down" + index}
+			>
+			</i>;
+		} else {
+			thumbup = null;
+		}
+		// checking whether to show Thumbs down icon
+		if ( props.value.showThumbDown === title )
+			thumbdown = <i 
+				className="fa fa-thumbs-down" 
+				onClick={()=> alert( "ThumbDown" )} 
+				key={"up" + index}
+			>
+			</i>;
+		else {
+			thumbup = null;
+		}
+		return (
+			<span>
+				{data}
+				{edit}
+				{block}
+				{thumbup}
+				{thumbdown}
+			</span>
+		);
+	};
+	// checks whether colspan is required or not
+	const columnState = (head) => {
+		var colSpanVal;
+		if ( props.value.colSpan.length &&
+			props.value.colSpan[0] === head ) {
+			colSpanVal = 2;
+		} else {
+			colSpanVal = 1;
+		}
+		return colSpanVal;
+	};
+	// returns column values and sort icons associated to it
+	const columnVal = (head) => {
+		var col;
+		if ( props.value.sort.indexOf( head ) > -1 ) {
+			col = <div>
+				<div className="col-xs-9 header-div" 
+					onClick={()=> clickHandler( head )}>
+					{ head }
+				</div>
+				<div className="col-xs-3 header-div">
+					{
+						sortArrow( head )
+					}
+				</div>
+			</div>;
+		} else {
+			col = <div className="col-xs-12 header-div">{ head }</div>;
+		}
+		return col;
+	};
+	// returns body values and icons for edit, delete, thumbup, thumbdown
+	const bodyVal = (val, index) => {
+		return props.value.header.map((title, i) => {
 
-            button = <span><i className="fa fa-chevron-up header-sort" onClick={()=> this.clickHandler(head,"asc")}></i><i className="fa fa-chevron-down header-sort" onClick={()=> this.clickHandler(head,"desc")}></i></span>
-        
-        }
-        return (button);
-    }
-    showData(val,title,index){
-      // function to render data for table body
-      // decides whether data is shown from api or is it custom icons
-      return(
-        <span>
-        {
-            title in val // checking whether the table header exist in api data
-            ? 
-            <div>
-              {
-                val[title] // shows the data from object
-              }
-            </div> : null // otherwise null
-        }
-        { this.props.value.showEdit === title // checking whether to show Edit icon
-              ? (
-                <i className="fa fa-pencil" onClick={()=> showAlert("Edit")} key={"edit"+index}></i>
-            ) : null
-        }
-        {
-            this.props.value.showBlock === title // checking whether to show Block icon
-              ? (
-                <i className="fa fa-ban" onClick={()=> showAlert("Blocked")} key={"block"+index}></i>
-            ) : null
-        }
-        {
-            this.props.value.showThumbUp === title // checking whether to show Thumbs up icon
-              ? (
-                <i className="fa fa-thumbs-up" onClick={()=> showAlert("ThumbUp")} key={"down"+index}></i>
-            ) : null
-            
-        }
-        {
-            this.props.value.showThumbDown === title // checking whether to show Thumbs down icon
-              ? (
-                <i className="fa fa-thumbs-down" onClick={()=> showAlert("ThumbDown")} key={"up"+index}></i>
-            ) : null
-        }
-        </span>
-      );
-    }
-    render() {
-      var colSpanVal;
-        return (
-          <div className="App">
-            <table className="table table-bordered">
-              <thead>
-                <tr>
-                {
-                  this.props.value.header.map(head => { // rendering header to show on table
-                    return( 
-                        this.props.value.colSpan.length && this.props.value.colSpan[0] === head // checking whether colspan is required or not
-                        ? colSpanVal = 2 : colSpanVal = 1 // sets 2 if required else 1
-                        ,
+			var bdVal;
+			if ( props.value.colSpan.length &&
+				props.value.colSpan[0] === title ) {
 
-                      <th key={head} colSpan={colSpanVal}>
-                      {
-                        this.props.value.sort.indexOf(head) > -1 ? (  // checking whether the sort arrow is required or not           
-                          <div>
-                            <div className="col-xs-9 header-div" onClick={()=> this.clickHandler(head)}>{head}</div>
-                            <div className="col-xs-3 header-div">
-                            {
-                              this.sortArrow(head) // invokes sortArrow function to get info on sorting arrow icon on header
-                            }
-                            </div>
-                          </div>
-                        ): (
-                          <div className="col-xs-12 header-div">{head}</div>
-                        )
-                      }
-                      </th>
-                    );
-                  })
-                }
-                </tr>
-              </thead>
-              <tbody>
-                {
-                this.props.value.body.map((val,index) => { // rendering body to show on table
-                  return(
-                    <tr key={index}>
-                      { 
-                        this.props.value.header.map((title,i) => { // getting header names for data query
-                          return (
-                            this.props.value.colSpan.length && this.props.value.colSpan[0] === title // checking whether colspan is required or not
-                            ? [
-                                <td key={"cell"+title+index}>
-                                {
-                                  this.showData(val,title,index) // fetching data for the current column element
-                                }
-                                </td>,
-                                <td key={"cell"+this.props.value.colSpan[1]+index}>
-                                {
-                                  this.showData(val,this.props.value.colSpan[1],index) // fetching data for the next column which is to be spanned
-                                }
-                                </td>
-                            ] :  
-                              this.props.value.rowSpan.length && this.props.value.rowSpan[0] === title && index % this.props.value.rowSpan[1] === 0 // checking whether rowspan is required or not
-                              ? [
-                                <td key={"cell"+title+index} rowSpan={this.props.value.rowSpan[1]}>
-                                {
-                                  this.showData(val,title,index) // fetching data for the current row element
-                                }
-                                </td>
-                              ] : 
-                                this.props.value.rowSpan.length && this.props.value.rowSpan[0] === title && index % this.props.value.rowSpan[1] !== 0 // checking whether to skip if already rowspan
-                                ? [ 
-                                  null // shows nothing as it is to be rowspan
-                                ] : [
-                                  <td key={"cell"+index+i}>
-                                    {
-                                      this.showData(val,title,index) // calling function to show data from api or custom icons set
-                                    }
-                                  </td>
-                              ]
-                          );
-                        })
-                      }
-                    </tr>
-                   );
-                  })
-                }
-              </tbody>
-            </table>
-          </div>
-        );
-    }
-}
+				bdVal = [
+					<td key={ "cell" + title + index }>
+						{
+							showData( val, title, index )
+						}
+					</td>,
+					<td key={"cell" + props.value.colSpan[1] + index}>
+						{
+							showData( val, props.value.colSpan[1], index )
+						}
+					</td>
+				];
+
+			} else if ( props.value.rowSpan.length &&
+				props.value.rowSpan[0] === title &&
+				index % props.value.rowSpan[1] === 0 ) {
+
+				bdVal = <td key={ "cell" + title + index } 
+					rowSpan={ props.value.rowSpan[1] }>
+					{
+						showData( val, title, index )
+					}
+				</td>;
+				
+			} else if ( props.value.rowSpan.length &&
+				props.value.rowSpan[0] === title &&
+				index % props.value.rowSpan[1] !== 0 ) {
+
+				bdVal = null;
+
+			} else {
+
+				bdVal = <td key={"cell"+index+i}>
+					{
+						showData( val, title, index )
+					}
+				</td>;
+
+			}
+			return ( bdVal );
+		});
+	};
+	var headerContent = props.value.header.map(head => {
+		return (
+			<th key={ head } colSpan={ columnState( head ) }>
+				{
+					columnVal( head )
+				}
+			</th>
+		);
+	});
+	var bodyContent = props.value.body.map((val, index) => {
+		return (
+			<tr key={index}>
+				{
+					bodyVal( val, index )
+				}
+			</tr>
+		);
+	});
+	
+	return (
+		<div className="App">
+			<table className="table table-bordered">
+				<thead>
+					<tr>
+						{
+							headerContent
+						}
+					</tr>
+				</thead>
+				<tbody>
+					{
+						bodyContent
+					}
+				</tbody>
+			</table>
+		</div>
+	);
+
+};
+
+TableComponent.propTypes = {
+	value: PropTypes.object.isRequired,
+	fetchUpdate: PropTypes.func.isRequired
+};
 
 export default TableComponent;
