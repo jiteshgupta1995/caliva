@@ -26,7 +26,7 @@ class App extends Component {
 				"Edit"
 			],
 			body: [],
-			sort: ["Name", "Address", "Time"],
+			sort: ["Name", "Email", "Address", "Time"],
 			showEdit: "Edit",
 			showBlock: "Edit",
 			showThumbDown: "Status",

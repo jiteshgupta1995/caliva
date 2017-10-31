@@ -11,52 +11,8 @@ const TableComponent = (props) => {
 				order = "asc";
 			}
 		}
-		// fetching new data by api from parent method
+		// fetching new data
 		props.fetchUpdate(key, order);
-	};
-	// checks column clicked and current order
-	// so that it can show which arrow to show in header of the table
-	const sortArrow = (head) => {
-		var button;
-		// checking if already selected sort sequence in ascending order
-		if (head === props.value.sortKey &&
-			props.value.order === "asc") {
-			button = <span>
-				<i 
-					className="fa fa-chevron-down header-sort" 
-					onClick={()=> clickHandler( head, "desc" )}
-				>
-				</i>
-			</span>;
-
-		}
-		// checking if already selected sort sequence in descending order
-		else if (head === props.value.sortKey &&
-			props.value.order === "desc") {
-			button = <span>
-				<i 
-					className="fa fa-chevron-up header-sort" 
-					onClick={()=> clickHandler( head, "asc" )}
-				>
-				</i>
-			</span>;
-		}
-		// otherwise showing both icon
-		else {
-			button = <span>
-				<i 
-					className="fa fa-chevron-up header-sort" 
-					onClick={()=> clickHandler( head, "asc" )}
-				>
-				</i>
-				<i 
-					className="fa fa-chevron-down header-sort" 
-					onClick={()=> clickHandler( head, "desc" )}
-				>
-				</i>
-			</span>;
-		}
-		return (button);
 	};
 	// renders data for table body
 	// decides whether data is shown from api or is it custom icons
@@ -123,18 +79,56 @@ const TableComponent = (props) => {
 	};
 	// checks whether colspan is required or not
 	const columnState = (head) => {
-		var colSpanVal;
 		if ( props.value.colSpan.length &&
 			props.value.colSpan[0] === head ) {
-			colSpanVal = 2;
+
+			return 2;
 		} else {
-			colSpanVal = 1;
+			return 1;
 		}
-		return colSpanVal;
 	};
 	// returns column values and sort icons associated to it
 	const columnVal = (head) => {
-		var col;
+		var button, col;
+		// checking if already selected sort sequence in ascending order
+		if (head === props.value.sortKey &&
+			props.value.order === "asc") {
+			button = <span>
+				<i 
+					className="fa fa-chevron-down header-sort" 
+					onClick={()=> clickHandler( head, "desc" )}
+				>
+				</i>
+			</span>;
+
+		}
+		// checking if already selected sort sequence in descending order
+		else if (head === props.value.sortKey &&
+			props.value.order === "desc") {
+			button = <span>
+				<i 
+					className="fa fa-chevron-up header-sort" 
+					onClick={()=> clickHandler( head, "asc" )}
+				>
+				</i>
+			</span>;
+		}
+		// otherwise showing both icon
+		else {
+			button = <span>
+				<i 
+					className="fa fa-chevron-up header-sort" 
+					onClick={()=> clickHandler( head, "asc" )}
+				>
+				</i>
+				<i 
+					className="fa fa-chevron-down header-sort" 
+					onClick={()=> clickHandler( head, "desc" )}
+				>
+				</i>
+			</span>;
+		}
+		// checking for sort icon on table header is required or not
 		if ( props.value.sort.indexOf( head ) > -1 ) {
 			col = <div>
 				<div className="col-xs-9 header-div" 
@@ -142,13 +136,13 @@ const TableComponent = (props) => {
 					{ head }
 				</div>
 				<div className="col-xs-3 header-div">
-					{
-						sortArrow( head )
-					}
+					{ button }
 				</div>
 			</div>;
 		} else {
-			col = <div className="col-xs-12 header-div">{ head }</div>;
+			col = <div className="col-xs-12 header-div">
+				{ head }
+			</div>;
 		}
 		return col;
 	};
@@ -157,6 +151,7 @@ const TableComponent = (props) => {
 		return props.value.header.map((title, i) => {
 
 			var bdVal;
+			// checking whether colspan is required
 			if ( props.value.colSpan.length &&
 				props.value.colSpan[0] === title ) {
 
@@ -173,7 +168,9 @@ const TableComponent = (props) => {
 					</td>
 				];
 
-			} else if ( props.value.rowSpan.length &&
+			}
+			// checking whether rowspan is required or not 
+			else if ( props.value.rowSpan.length &&
 				props.value.rowSpan[0] === title &&
 				index % props.value.rowSpan[1] === 0 ) {
 
@@ -184,15 +181,19 @@ const TableComponent = (props) => {
 					}
 				</td>;
 				
-			} else if ( props.value.rowSpan.length &&
+			}
+			// if already rowspan then skip
+			else if ( props.value.rowSpan.length &&
 				props.value.rowSpan[0] === title &&
 				index % props.value.rowSpan[1] !== 0 ) {
 
 				bdVal = null;
 
-			} else {
+			}
+			// else show data
+			else {
 
-				bdVal = <td key={"cell"+index+i}>
+				bdVal = <td key={"cell" + index + i}>
 					{
 						showData( val, title, index )
 					}
@@ -213,7 +214,7 @@ const TableComponent = (props) => {
 	});
 	var bodyContent = props.value.body.map((val, index) => {
 		return (
-			<tr key={index}>
+			<tr key={ index }>
 				{
 					bodyVal( val, index )
 				}
