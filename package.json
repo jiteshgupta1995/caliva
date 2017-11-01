@@ -2,6 +2,12 @@
   "name": "coliva",
   "version": "0.1.0",
   "private": true,
+  "nodemonConfig": {
+    "ignore": [
+      "__tests__/*"
+    ],
+    "delay": "2500"
+  },
   "dependencies": {
     "axios": "^0.17.0",
     "express": "^4.16.1",
@@ -18,15 +24,19 @@
     "babel-polyfill": "6.16.0",
     "babel-preset-es2015": "6.16.0",
     "babel-preset-react": "6.16.0",
+    "concurrently": "^3.5.0",
     "enzyme": "2.4.1",
     "eslint": "^4.10.0",
+    "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-react": "^7.4.0",
+    "eslint-plugin-sort-imports-es6": "0.0.3",
     "jest": "16.0.0",
+    "nodemon": "^1.12.1",
     "react-addons-test-utils": "15.3.2",
     "react-test-renderer": "15.3.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently 'react-scripts start' 'nodemon server.js'",
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject"

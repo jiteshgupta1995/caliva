@@ -1,38 +1,68 @@
 {
-    "env": {
+    "extends": [
+        "eslint:recommended"
+    ],
+    "env":
+    {
         "browser": true,
-        "es6": true
+        "commonjs": true,
+        "es6": true,
+        "node": true,
+        "mocha": true
     },
-    "extends": "eslint:recommended",
-    "parserOptions": {
-        "ecmaFeatures": {
+    "parserOptions":
+    {
+        "ecmaFeatures":
+        {
             "experimentalObjectRestSpread": true,
             "jsx": true
         },
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "import"
     ],
-    "rules": {
-        "indent": [
+    "rules":
+    {
+        "class-methods-use-this": ["error"],
+        "comma-dangle": ["error",
+        {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "ignore"
+        }],
+        "generator-star-spacing": ["error", "before"],
+        "import/extensions": ["off"],
+        "indent": ["error", 4],
+        "max-len": ["error",
+        {
+            "code": 110,
+            "ignoreUrls": true,
+            "ignoreRegExpLiterals": true,
+            "tabWidth": 2
+        }],
+        "no-param-reassign": ["error",
+        {
+            "props": false
+        }],
+        "no-plusplus": ["off"],
+        "no-restricted-syntax": [
             "error",
-            "tab"
+            "ForInStatement",
+            "LabeledStatement",
+            "WithStatement"
         ],
-        "max-len": [
-            "error", 80
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
+        "no-underscore-dangle": ["error",
+        {
+            "allowAfterThis": true
+        }],
+        "react/forbid-prop-types": ["off"],
+        "react/require-default-props": ["off"],
+        "react/require-extension": ["off"],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4]
     }
 }
