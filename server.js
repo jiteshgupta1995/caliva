@@ -26,7 +26,7 @@ app.use(function(req, res, next) {
 var data = {
     header: [{ code: "name", title: "Name", isSortable: true },
         { code: "email", title: "Email", isSortable: true },
-        { code: "address", title: "Address", isSortable: true },
+        { code: "address", title: "Address", isSortable: false },
         { code: "time", title: "Time", isSortable: true },
         { code: "status", title: "Status", isSortable: false, isCustom: true },
         { code: "action", title: "Action", isSortable: false, isCustom: true },
@@ -42,27 +42,35 @@ var data = {
         ],
         address: ["LasVegas", "LosAngeles", "Ln", "PA", "NY"],
         time: ["10:00", "06:00", "12:00", "11:00", "14:00"],
-        status: [],
-        action: [],
+        status: {
+            "thumbDown": true,
+            "thumbUp": true,
+        },
+        action: {
+            "edit": true,
+            "block": true,
+        },
     },
 };
 
-function sortBody(i, j){
+function sortBody(i, j) {
+    var temp;
     Object.keys(data.body).forEach(function(k) {
-        var temp = data.body[k][i];
+        temp = data.body[k][i];
         data.body[k][i] = data.body[k][j];
         data.body[k][j] = temp;
     });
 }
 
 function dynamicSort(property, order) {
-    for (var i = 0; i < data.body[property].length; i++) {
-        for(var j = 0; j < i; j++ ){
+    var i,j,len = data.body[property].length;
+    for (i = 0; i < len; i++) {
+        for (j = 0; j < i; j++) {
             if (order === "desc") {
                 if (data.body[property][i] > data.body[property][j]) {
                     sortBody(i, j);
                 }
-            }else{
+            } else {
                 if (data.body[property][i] < data.body[property][j]) {
                     sortBody(i, j);
                 }
@@ -73,9 +81,7 @@ function dynamicSort(property, order) {
 
 // api GET request for caliva
 app.get("/fetchrecord", (req, res) => {
-    var key = req.query.sortKey;
-    var order = req.query.order;
     res.setHeader("Content-Type", "application/json");
-    dynamicSort(key, order);
+    dynamicSort(req.query.sortKey, req.query.order);
     res.send(data).status(200);
 });

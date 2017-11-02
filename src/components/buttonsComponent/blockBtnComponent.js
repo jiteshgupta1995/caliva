@@ -1,7 +1,7 @@
 import React from "react";
 
-const getBlockBtn = (position, title, index) => {
-    if (position === title) {
+const getBlockBtn = (showBlock, position, title, index) => {
+    if (showBlock["block"] && position === title) {
         return <i 
             className="fa fa-ban" 
             onClick={()=> alert("Blocked")} 

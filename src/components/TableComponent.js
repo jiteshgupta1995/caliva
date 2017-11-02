@@ -6,7 +6,8 @@ import getThumbUpBtn from "./buttonsComponent/thumbUpBtnComponent";
 import getThumbDownBtn from "./buttonsComponent/thumbDownBtnComponent";
 
 const TableComponent = (props) => {
-    var headerKey;
+
+    let headerKey;
     // Checks whether colspan is required or not
     // const isColSpan = (head) => {
     //     if (props.value.colSpan.length &&
@@ -17,7 +18,7 @@ const TableComponent = (props) => {
     //     }
     // };
 
-    // Called upon sort button clicked to change the order
+    // Sort action handler
     const onSortClick = (key, order = "asc") => {
         var o = order;
         if (props.value.sortKey === key) {
@@ -27,54 +28,28 @@ const TableComponent = (props) => {
                 o = "asc";
             }
         }
-        // Fetching new data
         props.onGetNewData(key, o);
     };
 
-    // Renders data for table body
-    // Decides whether data is shown from api or is it custom icons
-    const processBodyData = (title, bIndex) => {
-        var data;
-        if (props.value.body[title.code].length !== 0) {
-            data = <span>{props.value.body[title.code][bIndex]}</span>;
-        } else {
-            data = null;
-        }
-        return (
-            <span>
-                {data}
-                {getEditBtn("Action", title.title, bIndex)}
-                {getBlockBtn("Action", title.title, bIndex)}
-                {getThumbUpBtn("Status", title.title, bIndex)}
-                {getThumbDownBtn("Status", title.title, bIndex)}
-            </span>
-        );
-    };
-
-    // Returns column values and sort icons associated to it
-    const getHeaderData = (head) => {
-        var button, col;
-
-        // Checking if already selected sort sequence in ascending order
+    const getSortBtn = (head) => {
         if (head.code === props.value.sortKey &&
             props.value.order === "asc") {
-            button = <span>
+            return <span>
                 <i 
                     className="fa fa-chevron-down header-sort" 
                     onClick={()=> onSortClick(head.code, "desc")}
                 />
             </span>;
-
         } else if (head.code === props.value.sortKey &&
             props.value.order === "desc") {
-            button = <span>
+            return <span>
                 <i 
                     className="fa fa-chevron-up header-sort" 
                     onClick={()=> onSortClick(head.code, "asc")}
                 />
             </span>;
         } else {
-            button = <span>
+            return <span>
                 <i 
                     className="fa fa-chevron-up header-sort" 
                     onClick={()=> onSortClick(head.code, "asc")}
@@ -85,7 +60,14 @@ const TableComponent = (props) => {
                 />
             </span>;
         }
-        // Checking for sort icon on table header is required or not
+    }
+
+    const getHeaderData = (head) => {
+        const button = getSortBtn(head);
+        let col;
+        if(headerKey === undefined){
+            headerKey = head.code;
+        }
         if (head.isSortable) {
             col = <div>
                 <div className="col-xs-9 header-div" 
@@ -99,14 +81,33 @@ const TableComponent = (props) => {
         } else {
             col = <div className="col-xs-12 header-div">{head.title}</div>;
         }
-
-        if(head["isCustom"] === undefined){
-            headerKey = head.code;
-        }
         return col;
     };
 
-    // Returns body values and icons for edit, delete, thumbup, thumbdown
+    // Renders data for table header
+    // Decides whether data along with sort icon is required or not
+    const headerContent = props.value.header.map(head => {
+        return (<th key={head.title}>{getHeaderData(head)}</th>);
+    });
+
+    const processBodyData = (title, bIndex) => {
+        let data;
+        if (Array.isArray(props.value.body[title.code])) {
+            data = <span>{props.value.body[title.code][bIndex]}</span>;
+        } else {
+            data = null;
+        }
+        return (
+            <span>
+                {data}
+                {getEditBtn(props.value.body[title.code], "action", title.code, bIndex)}
+                {getBlockBtn(props.value.body[title.code], "action", title.code, bIndex)}
+                {getThumbUpBtn(props.value.body[title.code], "status", title.code, bIndex)}
+                {getThumbDownBtn(props.value.body[title.code], "status", title.code, bIndex)}
+            </span>
+        );
+    };
+
     const getBodyData = (bodyIndex) => {
         return props.value.header.map((title, headerIndex) => {
             return(
@@ -117,12 +118,8 @@ const TableComponent = (props) => {
         });
     };
 
-    const headerContent = props.value.header.map(head => {
-        return (
-            <th key={head.title}>{getHeaderData(head)}</th>
-        );
-    });
-
+    // Renders data for table body
+    // Decides whether data is shown from api or is it custom icons
     const bodyContent = props.value.body[headerKey].map((key, index)=> {
         return (<tr key={index}>{getBodyData(index)}</tr>);
     });

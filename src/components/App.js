@@ -8,17 +8,6 @@ class App extends Component {
         super(props);
         this.getNewData = this.getNewData.bind(this);
         this.isDataLoaded = this.isDataLoaded.bind(this);
-        // Data to be passed to table component
-        // 'header' is for number of column to show in table
-        // 'body' contains the data from api calls
-        // 'sort' contains the column name where the filter is required
-        // 'showEdit','showBlock','showThumbDown','showThumbUp' contains the name of column where
-        // the edit button is to be shown otherwise will be empty
-        // 'order' contains by default sort order, can be 'asc' or 'desc'
-        // 'sortKey' contains column name which is default column to be sorted
-        // 'colSpan' contains array of 2 column name where column span has to be applied
-        // 'rowSpan' conatins array of 2, one containing column header and other number
-        // of rows to be spanned
         this.state = {
             header: [],
             body: {},
@@ -65,7 +54,7 @@ class App extends Component {
             this.isDataLoaded()
         );
     }
-    
+
 }
 
 export default App;
