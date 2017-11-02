@@ -25,6 +25,8 @@ class App extends Component {
             self.setState({ 
                 body: d.body,
                 header: d.header,
+                colSpan: d.options.colSpan,
+                rowSpan: d.options.rowSpan,
             });
         });
     }

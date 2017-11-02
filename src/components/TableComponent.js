@@ -9,14 +9,17 @@ const TableComponent = (props) => {
 
     let headerKey;
     // Checks whether colspan is required or not
-    // const isColSpan = (head) => {
-    //     if (props.value.colSpan.length &&
-    //         props.value.colSpan[0] === head) {
-    //         return 2;
-    //     } else {
-    //         return 1;
-    //     }
-    // };
+    const isColSpan = (head) => {
+        if (props.value.colSpan.length &&
+            props.value.colSpan[0] === head) {
+            return 2;
+        } else if (props.value.colSpan.length &&
+            props.value.colSpan[1] === head) {
+            return 0;
+        }else {
+            return 1;
+        }
+    };
 
     // Sort action handler
     const onSortClick = (key, order = "asc") => {
@@ -81,13 +84,22 @@ const TableComponent = (props) => {
         } else {
             col = <div className="col-xs-12 header-div">{head.title}</div>;
         }
+    
         return col;
     };
 
     // Renders data for table header
     // Decides whether data along with sort icon is required or not
     const headerContent = props.value.header.map(head => {
-        return (<th key={head.title}>{getHeaderData(head)}</th>);
+        let tableHeader;
+        if(isColSpan(head.code)){
+            tableHeader = <th key={head.title} colSpan={isColSpan(head.code)}>
+                {getHeaderData(head)}
+            </th>;
+        }else{
+            tableHeader = null;
+        }
+        return (tableHeader);
     });
 
     const processBodyData = (title, bIndex) => {
@@ -110,11 +122,28 @@ const TableComponent = (props) => {
 
     const getBodyData = (bodyIndex) => {
         return props.value.header.map((title, headerIndex) => {
-            return(
-                <td key={"cell" + bodyIndex + headerIndex}>
+            let bdVal;
+            if ( props.value.rowSpan.length &&
+                props.value.rowSpan[0] === title.code &&
+                bodyIndex % props.value.rowSpan[1] === 0 ) {
+
+                bdVal = <td key={ "cell" + title.code + bodyIndex } 
+                    rowSpan={ props.value.rowSpan[1] }>
                     {processBodyData(title, bodyIndex)}
-                </td>
-            );
+                </td>;
+                
+            } else if ( props.value.rowSpan.length &&
+                props.value.rowSpan[0] === title.code &&
+                bodyIndex % props.value.rowSpan[1] !== 0 ) {
+
+                bdVal = null;
+
+            } else {
+                bdVal = <td key={"cell" + bodyIndex + headerIndex}>
+                    {processBodyData(title, bodyIndex)}
+                </td>;
+            }
+            return(bdVal);
         });
     };
 

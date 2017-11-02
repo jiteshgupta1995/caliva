@@ -51,6 +51,10 @@ var data = {
             "block": true,
         },
     },
+    options: {
+        colSpan: ["name","email"],
+        rowSpan: ["address",2],
+    },
 };
 
 function sortBody(i, j) {
