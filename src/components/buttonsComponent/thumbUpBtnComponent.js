@@ -1,7 +1,7 @@
 import React from "react";
 
-const getThumbUpBtn = (showThumbUp, title, index) => {
-    if (showThumbUp === title) {
+const getThumbUpBtn = (position, title, index) => {
+    if (position === title) {
         return <i 
             className="fa fa-thumbs-up" 
             onClick={()=> alert("ThumbUp")} 

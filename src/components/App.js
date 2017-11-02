@@ -3,8 +3,11 @@ import TableComponent from "./TableComponent";
 import { records } from "../helper/NetworkRequest";
 
 class App extends Component {
-    constructor() {
-        super();
+
+    constructor(props) {
+        super(props);
+        this.getNewData = this.getNewData.bind(this);
+        this.isDataLoaded = this.isDataLoaded.bind(this);
         // Data to be passed to table component
         // 'header' is for number of column to show in table
         // 'body' contains the data from api calls
@@ -17,50 +20,52 @@ class App extends Component {
         // 'rowSpan' conatins array of 2, one containing column header and other number
         // of rows to be spanned
         this.state = {
-            header: [
-                "Name",
-                "Email",
-                "Address",
-                "Time",
-                "Status",
-                "Edit",
-            ],
-            body: [],
-            sort: ["Name", "Email", "Address", "Time"],
-            showEdit: "Edit",
-            showBlock: "Edit",
-            showThumbDown: "Status",
-            showThumbUp: "Status",
+            header: [],
+            body: {},
+            sort: [],
             order: "asc",
-            sortKey: "Name",
+            sortKey: "name",
             colSpan: [],
             rowSpan: [],
         };
-        this.getNewData = this.getNewData.bind(this);
-
     }
+
     componentWillMount() {
         var self = this;
         records(this.state.sortKey, this.state.order).then(function(d) {
-            self.setState({ body: d });
+            self.setState({ 
+                body: d.body,
+                header: d.header,
+            });
         });
     }
+
     // Fetch records by api on every time sort action is performed and updating state
     getNewData(key, order) {
         var self = this;
         records(key, order).then(function(d) {
             self.setState({
-                body: d,
+                body: d.body,
+                header: d.header,
                 order: order,
                 sortKey: key,
             });
         });
     }
+
+    isDataLoaded(){
+        if(this.state.header.length === 0){
+            return <div>Loading</div>;
+        }
+        return <TableComponent value={this.state} onGetNewData={this.getNewData} />;
+    }
+
     render() {
         return (
-            <TableComponent value={this.state} onGetNewData={this.getNewData} />
+            this.isDataLoaded()
         );
     }
+    
 }
 
 export default App;

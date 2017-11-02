@@ -1,7 +1,7 @@
 import React from "react";
 
-const getEditBtn = (showEdit, title, index) => {
-    if (showEdit === title) {
+const getEditBtn = (position, title, index) => {
+    if (position === title) {
         return <i 
             className="fa fa-pencil" 
             onClick={()=> alert("Edit")} 

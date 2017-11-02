@@ -3,14 +3,14 @@ var app = express();
 var port = 3001;
 
 app.listen(port, (err) => {
-    if (err) {// eslint-disable-next-line no-console
+    if (err) { // eslint-disable-next-line no-console
         return console.log("something bad happened", err);
-    }// eslint-disable-next-line no-console
+    } // eslint-disable-next-line no-console
     console.log(`server is listening on ${port}`);
 });
 
 // Add headers
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     // Request methods you wish to allow
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
@@ -23,60 +23,59 @@ app.use(function (req, res, next) {
     next();
 });
 
-var data = [
-    {
-        Name: "Amelia",
-        Email: "Dexter.Trantow57@hotmail.com",
-        Address: "LN",
-        Time: "12:00",
+var data = {
+    header: [{ code: "name", title: "Name", isSortable: true },
+        { code: "email", title: "Email", isSortable: true },
+        { code: "address", title: "Address", isSortable: true },
+        { code: "time", title: "Time", isSortable: true },
+        { code: "status", title: "Status", isSortable: false, isCustom: true },
+        { code: "action", title: "Action", isSortable: false, isCustom: true },
+    ],
+    body: {
+        name: ["Amelia", "Tressa", "Florence", "Rylan", "Estevan"],
+        email: [
+            "Aimee7@hotmail.com",
+            "Tressa1@hotmail.com",
+            "Florence57@hotmail.com",
+            "Rylan13@yahoo.com",
+            "Estevan42@gmail.com",
+        ],
+        address: ["LasVegas", "LosAngeles", "Ln", "PA", "NY"],
+        time: ["10:00", "06:00", "12:00", "11:00", "14:00"],
+        status: [],
+        action: [],
     },
-    {
-        Name: "Estevan",
-        Email: "Aimee7@hotmail.com",
-        Address:"LosAngeles",
-        Time: "01:00",
-    },
-    {
-        Name: "Florence",
-        Email: "Jarrod.Bernier13@yahoo.com",
-        Address: "LasVegas",
-        Time: "11:00",
-    },
-    {
-        Name: "Rylan",
-        Email: "Angelita_Weimann42@gmail.com",
-        Address: "PA",
-        Time: "06:00",
-    },
-    {
-        Name: "Tressa",
-        Email: "Yadira1@hotmail.com",
-        Address: "NY",
-        Time: "14:00",
-    },
-];
+};
 
-
-function sort(property){
-    var sortOrder = 1;
-    if(property[0] === "-") {
-        sortOrder = -1;
-        property = property.substr(1);
-    }
-    return function (a,b) {
-        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-        return result * sortOrder;
-    };
+function sortBody(i, j){
+    Object.keys(data.body).forEach(function(k) {
+        var temp = data.body[k][i];
+        data.body[k][i] = data.body[k][j];
+        data.body[k][j] = temp;
+    });
 }
+
+function dynamicSort(property, order) {
+    for (var i = 0; i < data.body[property].length; i++) {
+        for(var j = 0; j < i; j++ ){
+            if (order === "desc") {
+                if (data.body[property][i] > data.body[property][j]) {
+                    sortBody(i, j);
+                }
+            }else{
+                if (data.body[property][i] < data.body[property][j]) {
+                    sortBody(i, j);
+                }
+            }
+        }
+    }
+}
+
 // api GET request for caliva
 app.get("/fetchrecord", (req, res) => {
     var key = req.query.sortKey;
     var order = req.query.order;
     res.setHeader("Content-Type", "application/json");
-    if(order == "asc"){ // checks whether sortorder is ascending or descending
-        data.sort(sort(key));
-    }else{
-        data.sort(sort("-"+key));
-    }
+    dynamicSort(key, order);
     res.send(data).status(200);
 });

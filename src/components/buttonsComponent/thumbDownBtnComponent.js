@@ -1,7 +1,7 @@
 import React from "react";
 
-const getThumbDownBtn = (showThumbDown, title, index) => {
-    if (showThumbDown === title) {
+const getThumbDownBtn = (position, title, index) => {
+    if (position === title) {
         return <i 
             className="fa fa-thumbs-down" 
             onClick={()=> alert("ThumbDown")} 
