@@ -24,68 +24,37 @@ app.use(function(req, res, next) {
 });
 
 var data = {
-    header: [{ code: "name", title: "Name", isSortable: true },
-        { code: "email", title: "Email", isSortable: true },
-        { code: "address", title: "Address", isSortable: false },
+    header: [{ code: "name", title: "Name", isSortable: true, colSpan:2 },
+        { code: "email", title: "Email", isSortable: true, colSpan:0 },
+        { code: "address", title: "Address", isSortable: false, rowSpan: 2 },
         { code: "time", title: "Time", isSortable: true },
         { code: "status", title: "Status", isSortable: false, isCustom: true },
         { code: "action", title: "Action", isSortable: false, isCustom: true },
     ],
-    body: {
-        name: ["Amelia", "Tressa", "Florence", "Rylan", "Estevan"],
-        email: [
-            "Aimee7@hotmail.com",
-            "Tressa1@hotmail.com",
-            "Florence57@hotmail.com",
-            "Rylan13@yahoo.com",
-            "Estevan42@gmail.com",
-        ],
-        address: ["LasVegas", "LosAngeles", "Ln", "PA", "NY"],
-        time: ["10:00", "06:00", "12:00", "11:00", "14:00"],
-        status: {
-            "thumbDown": true,
-            "thumbUp": true,
-        },
-        action: {
-            "edit": true,
-            "block": true,
-        },
-    },
-    options: {
-        colSpan: ["name","email"],
-        rowSpan: ["address",2],
-    },
+    body: [
+        {name: 'Amelia', email: 'Dexter.Trantow57@hotmail.com', address: 'LN', time: '12:00'},
+        {name: 'Estevan', email: 'Aimee7@hotmail.com', address:'LosAngeles', time: '01:00'},
+        {name: 'Florence', email: 'Jarrod.Bernier13@yahoo.com', address: 'LasVegas', time: '11:00'},
+        {name: 'Rylan', email: 'Angelita_Weimann42@gmail.com', address: 'PA', time: '06:00'},
+        {name: 'Tressa', email: 'Yadira1@hotmail.com', address: 'NY', time: '14:00'},
+    ],
 };
 
-function sortBody(i, j) {
-    var temp;
-    Object.keys(data.body).forEach(function(k) {
-        temp = data.body[k][i];
-        data.body[k][i] = data.body[k][j];
-        data.body[k][j] = temp;
-    });
-}
-
-function dynamicSort(property, order) {
-    var i,j,len = data.body[property].length;
-    for (i = 0; i < len; i++) {
-        for (j = 0; j < i; j++) {
-            if (order === "desc") {
-                if (data.body[property][i] > data.body[property][j]) {
-                    sortBody(i, j);
-                }
-            } else {
-                if (data.body[property][i] < data.body[property][j]) {
-                    sortBody(i, j);
-                }
-            }
-        }
+function sortBody(p,o){
+    var property = p;
+    var sortOrder = 1;
+    if(o === "desc") {
+        sortOrder = -1;
     }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    };
 }
 
 // api GET request for caliva
 app.get("/fetchrecord", (req, res) => {
     res.setHeader("Content-Type", "application/json");
-    dynamicSort(req.query.sortKey, req.query.order);
+    data.body.sort(sortBody(req.query.sortKey,req.query.order));
     res.send(data).status(200);
 });

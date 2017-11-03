@@ -7,15 +7,11 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.getNewData = this.getNewData.bind(this);
-        this.isDataLoaded = this.isDataLoaded.bind(this);
         this.state = {
             header: [],
-            body: {},
-            sort: [],
+            body: [],
             order: "asc",
             sortKey: "name",
-            colSpan: [],
-            rowSpan: [],
         };
     }
 
@@ -25,8 +21,6 @@ class App extends Component {
             self.setState({ 
                 body: d.body,
                 header: d.header,
-                colSpan: d.options.colSpan,
-                rowSpan: d.options.rowSpan,
             });
         });
     }
@@ -44,16 +38,9 @@ class App extends Component {
         });
     }
 
-    isDataLoaded(){
-        if(this.state.header.length === 0){
-            return <div>Loading</div>;
-        }
-        return <TableComponent value={this.state} onGetNewData={this.getNewData} />;
-    }
-
     render() {
         return (
-            this.isDataLoaded()
+            <TableComponent value={this.state} onGetNewData={this.getNewData} />
         );
     }
 

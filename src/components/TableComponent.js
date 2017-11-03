@@ -1,20 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
-import getEditBtn from "./buttonsComponent/editBtnComponent";
-import getBlockBtn from "./buttonsComponent/blockBtnComponent";
-import getThumbUpBtn from "./buttonsComponent/thumbUpBtnComponent";
-import getThumbDownBtn from "./buttonsComponent/thumbDownBtnComponent";
+import GetEditBtn from "./buttonsComponent/editBtnComponent";
+import GetBlockBtn from "./buttonsComponent/blockBtnComponent";
+import GetThumbUpBtn from "./buttonsComponent/thumbUpBtnComponent";
+import GetThumbDownBtn from "./buttonsComponent/thumbDownBtnComponent";
 
 const TableComponent = (props) => {
 
-    let headerKey;
     // Checks whether colspan is required or not
     const isColSpan = (head) => {
-        if (props.value.colSpan.length &&
-            props.value.colSpan[0] === head) {
+        if (head !== undefined &&
+            head === 2) {
             return 2;
-        } else if (props.value.colSpan.length &&
-            props.value.colSpan[1] === head) {
+        } else if (head !== undefined &&
+            head === 0) {
             return 0;
         }else {
             return 1;
@@ -68,9 +67,6 @@ const TableComponent = (props) => {
     const getHeaderData = (head) => {
         const button = getSortBtn(head);
         let col;
-        if(headerKey === undefined){
-            headerKey = head.code;
-        }
         if (head.isSortable) {
             col = <div>
                 <div className="col-xs-9 header-div" 
@@ -92,8 +88,8 @@ const TableComponent = (props) => {
     // Decides whether data along with sort icon is required or not
     const headerContent = props.value.header.map(head => {
         let tableHeader;
-        if(isColSpan(head.code)){
-            tableHeader = <th key={head.title} colSpan={isColSpan(head.code)}>
+        if(isColSpan(head.colSpan)){
+            tableHeader = <th key={head.title} colSpan={isColSpan(head.colSpan)}>
                 {getHeaderData(head)}
             </th>;
         }else{
@@ -104,18 +100,22 @@ const TableComponent = (props) => {
 
     const processBodyData = (title, bIndex) => {
         let data;
-        if (Array.isArray(props.value.body[title.code])) {
-            data = <span>{props.value.body[title.code][bIndex]}</span>;
+        if (props.value.body[bIndex][title.code] !== undefined) {
+            data = <span>{props.value.body[bIndex][title.code]}</span>;
         } else {
             data = null;
         }
         return (
             <span>
                 {data}
-                {getEditBtn(props.value.body[title.code], "action", title.code, bIndex)}
-                {getBlockBtn(props.value.body[title.code], "action", title.code, bIndex)}
-                {getThumbUpBtn(props.value.body[title.code], "status", title.code, bIndex)}
-                {getThumbDownBtn(props.value.body[title.code], "status", title.code, bIndex)}
+                <GetEditBtn showEdit={title.isCustom} 
+                    title={title.code} index={bIndex} />
+                <GetBlockBtn showBlock={title.isCustom} 
+                    title={title.code} index={bIndex} />
+                <GetThumbUpBtn showThumb={title.isCustom} 
+                    title={title.code} index={bIndex} />
+                <GetThumbDownBtn showThumb={title.isCustom} 
+                    title={title.code} index={bIndex} />
             </span>
         );
     };
@@ -123,21 +123,15 @@ const TableComponent = (props) => {
     const getBodyData = (bodyIndex) => {
         return props.value.header.map((title, headerIndex) => {
             let bdVal;
-            if ( props.value.rowSpan.length &&
-                props.value.rowSpan[0] === title.code &&
-                bodyIndex % props.value.rowSpan[1] === 0 ) {
-
+            if ( title.rowSpan !== undefined &&
+                bodyIndex % title.rowSpan === 0 ) {
                 bdVal = <td key={ "cell" + title.code + bodyIndex } 
-                    rowSpan={ props.value.rowSpan[1] }>
+                    rowSpan={ title.rowSpan }>
                     {processBodyData(title, bodyIndex)}
                 </td>;
-                
-            } else if ( props.value.rowSpan.length &&
-                props.value.rowSpan[0] === title.code &&
-                bodyIndex % props.value.rowSpan[1] !== 0 ) {
-
+            } else if ( title.rowSpan !== undefined &&
+                bodyIndex % title.rowSpan !== 0 ) {
                 bdVal = null;
-
             } else {
                 bdVal = <td key={"cell" + bodyIndex + headerIndex}>
                     {processBodyData(title, bodyIndex)}
@@ -149,7 +143,7 @@ const TableComponent = (props) => {
 
     // Renders data for table body
     // Decides whether data is shown from api or is it custom icons
-    const bodyContent = props.value.body[headerKey].map((key, index)=> {
+    const bodyContent = props.value.body.map((key, index)=> {
         return (<tr key={index}>{getBodyData(index)}</tr>);
     });
 
@@ -167,6 +161,16 @@ const TableComponent = (props) => {
 TableComponent.propTypes = {
     value: PropTypes.object.isRequired,
     onGetNewData: PropTypes.func.isRequired,
+};
+
+TableComponent.defaultProps = {
+    value: {
+        header: [{ code: "name", title: "Name" },{ code: "email", title: "Email"}],
+        body: [{name: "Some name", email: "Dexter.Trantow57@hotmail.com"}],
+        order: "asc",
+        sortKey: "name",
+    },
+    onGetNewData: function(){return;},
 };
 
 export default TableComponent;
